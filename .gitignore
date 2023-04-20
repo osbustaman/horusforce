@@ -1,3 +1,5 @@
 app01/.vscode/launch.json
 app01/db.sqlite3
 *.pyc
+local.py
+app01/app01/settings/local.py
