@@ -58,7 +58,7 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
-    'app.middleware.middleware.multidb_middleware',
+    #'app.middleware.middleware.multidb_middleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -80,7 +80,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-ROOT_URLCONF = 'app.urls'
+ROOT_URLCONF = 'app01.urls'
 
 
 TEMPLATES = [
@@ -99,10 +99,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = 'app01.wsgi.application'
 
 
-DATABASE_ROUTERS = ['app.routers.Cableado']
+DATABASE_ROUTERS = ['app01.routers.Cableado']
 
 
 # Password validation
