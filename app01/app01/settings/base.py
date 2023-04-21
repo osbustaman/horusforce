@@ -38,6 +38,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.db.models.fields'
 ]
 
 THIRD_PARTY_APPS = [
@@ -55,7 +56,7 @@ LOCAL_APPS = [
     'applications.usuario'
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     #'app.middleware.middleware.multidb_middleware',
