@@ -17,14 +17,26 @@ Estos son los pasos para instalar la aplicación den algun entorno.
 
 + sudo apt install python3-virtualenv
 
-
 > Instalar Python (version 3.10 como mínimo.)
 
 + sudo apt update
 + Instalar Python 3.10 como mínimo.
 + python3 --version
 
+> Instalar mod_wsgi, esto es para la interacción de apacho con python
 
++ sudo apt-get install libapache2-mod-wsgi-py3
+
+## Configuración del proyecto despés de la configuración del entorno
+
+> Descargar el proyecto desde el repositorio
+
++ para desacargar el proyecto se deben solicitar las credenciales al administrador de git
++ la descarga debe ser en la ruta /var/www/html
++ se debe dar permisos sudo chmod -R (consultar que permiso) horusforce/
++ crear la carpeta de entorno virtual
+
+        virtualenv env
 
 # app
 Configuración
