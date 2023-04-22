@@ -1,3 +1,15 @@
+# Configuración app01
+
+Estos son los pasos para instalar la aplicación den algun entorno.
+
+> Instalar Python (version 3.10 como mínimo.)
+
++ sudo apt update
++ Instalar Python 3.10 como mínimo.
++ python3 --version
+
+
+
 # app
 Configuración
 
