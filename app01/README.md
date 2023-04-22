@@ -1,5 +1,7 @@
 # Configuración app01
 
+## Configuración entorno
+
 Estos son los pasos para instalar la aplicación den algun entorno.
 
 > Instalar Apache
