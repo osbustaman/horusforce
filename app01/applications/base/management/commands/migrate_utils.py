@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.core.management.base import BaseCommand
-from app.functions import load_data_base
+from app01.functions import load_data_base
 
 from applications.base.models import Cliente
 from applications.empresa.models import Afp, Banco, TipoContrato, CajasCompensacion, Salud
