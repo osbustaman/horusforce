@@ -41,6 +41,8 @@ Estos son los pasos para instalar la aplicación den algun entorno.
     Enter new password:
     Enter it again:
     \q
+  
+> para poder configurar el acceso desde un computador local se debe solicitar las intrucciones
     
 
 ## Configuración del proyecto despés de la configuración del entorno
