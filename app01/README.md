@@ -34,9 +34,11 @@ Estos son los pasos para instalar la aplicación den algun entorno.
 + para desacargar el proyecto se deben solicitar las credenciales al administrador de git
 + la descarga debe ser en la ruta /var/www/html
 + se debe dar permisos sudo chmod -R (consultar que permiso) horusforce/
-+ crear la carpeta de entorno virtual
++ crear la carpeta de entorno virtual dentro de la ruta del proyecto /var/www/html/horusforce/app01 (seguir los siguientes pasos)
 
         virtualenv env
+        source env/bin/activate
+        pip install -r requirements.txt
 
 # app
 Configuración
