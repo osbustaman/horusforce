@@ -38,6 +38,9 @@ Estos son los pasos para instalar la aplicación den algun entorno.
 
         virtualenv env
         source env/bin/activate
+        
++ despues de activar el entorno virtual se van a instalar las librerias que se usarán para que se pueda levantar la aplicación, para eso se debe ejecutar el siguiente comando
+
         pip install -r requirements.txt
 
 # app
