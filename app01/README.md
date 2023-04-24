@@ -27,6 +27,24 @@ Estos son los pasos para instalar la aplicación den algun entorno.
 
 + sudo apt-get install libapache2-mod-wsgi-py3
 
+## Configuración de la base de datos
+
+> Actualizar la lista de paquetes de Ubuntu e instalar los paquetes necesarios:
+    
+    sudo apt-get update
+    sudo apt-get install python3-pip python3-dev libpq-dev postgresql postgresql-contrib
+    
+> Cambiar clave usuario postgres
+
+    sudo -u postgres psql postgres
+    \password postgres
+    Enter new password:
+    Enter it again:
+    \q
+  
+> para poder configurar el acceso desde un computador local se debe solicitar las intrucciones
+    
+
 ## Configuración del proyecto despés de la configuración del entorno
 
 > Descargar el proyecto desde el repositorio
@@ -34,9 +52,16 @@ Estos son los pasos para instalar la aplicación den algun entorno.
 + para desacargar el proyecto se deben solicitar las credenciales al administrador de git
 + la descarga debe ser en la ruta /var/www/html
 + se debe dar permisos sudo chmod -R (consultar que permiso) horusforce/
-+ crear la carpeta de entorno virtual
++ crear la carpeta de entorno virtual dentro de la ruta del proyecto /var/www/html/horusforce/app01 (seguir los siguientes pasos)
 
         virtualenv env
+        source env/bin/activate
+        
++ despues de activar el entorno virtual se van a instalar las librerias que se usarán para que se pueda levantar la aplicación, para eso se debe ejecutar el siguiente comando
+
+        pip install -r requirements.txt
+        
+Ya con esto se tiene configurado el proyecto
 
 # app
 Configuración
