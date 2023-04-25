@@ -48,6 +48,7 @@ class ColaboradorCreateAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         # Crea una instancia del serializador de colaborador con los datos de la petición
         colaborador_serializer = self.serializer_class(data=request.data)
+        
         # Crea una instancia del serializador de usuario con los datos del campo 'user' en la petición
         user_serializer = self.user_serializer_class(data=request.data['user'])
 
