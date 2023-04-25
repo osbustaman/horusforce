@@ -1,8 +1,7 @@
 app01/.vscode/launch.json
 app01/db.sqlite3
+settings
 *.pyc
-local.py
-app01/app01/settings/local.py
 **/migrations/!(__init__.py)
 staticfiles/
 settings/

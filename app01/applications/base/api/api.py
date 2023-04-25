@@ -114,14 +114,45 @@ class ClienteRetriveUpdateView(generics.UpdateAPIView):
         cliente = Cliente.objects.get(pk=pk)
         cliente_serializer = self.serializer_class(cliente, data=request.data)
         if cliente_serializer.is_valid():
+            cliente_serializer.cli_link = request.data['cli_link']
             cliente_serializer.save()
             return Response(cliente_serializer.data, status=status.HTTP_200_OK)
         return Response(cliente_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ClienteDeleteView(generics.DestroyAPIView):
+"""class ClienteDeleteView(generics.DestroyAPIView):
     # From here a tipo_producto is delete 
     serializer_class = ClienteSerializers
-    queryset = Cliente.objects.all()
+    queryset = Cliente.objects.all()"""
+
+class ClienteDeleteView(generics.ListAPIView):
+    # From here a tipo_producto is delete 
+    serializer_class = ClienteSerializers
+    def get_queryset(self):
+        return None
+
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="Borrado logico de un cliente",
+        operation_description="Borrado logico de un cliente",
+        security=[{"Bearer": []}]
+    )
+    def get(self, request, *args, **kwargs):
+
+        try:
+            object_cliente = Cliente.objects.get(id=self.kwargs['pk'])
+            object_cliente.deleted = "S"
+            object_cliente.save()
+            
+            data = {"data": True}
+            
+            # Devolver la respuesta HTTP
+            return Response(data, status=status.HTTP_200_OK)
+        
+        except Exception as inst:
+            data = {
+                "type_error": type(inst)
+            }
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 class AdminUserCreateAPIView(generics.CreateAPIView):
     queryset = User.objects.none()

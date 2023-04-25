@@ -95,7 +95,10 @@ class Cliente(TimeStampedModel):
         return str(self.id) + ' - ' + self.nombre_cliente
 
     def __create_url_client(self):
-        return f"http://{self.nombre_bd}.{NAME_HOST}:{PORT_LOCALHOST}"
+        isCliente = Cliente.objects.filter(rut_cliente = self.rut_cliente).exists()
+        if not isCliente:
+            return f"http://{self.nombre_bd}.{NAME_HOST}:{PORT_LOCALHOST}"
+        return self.cli_link
 
     create_url_client = property(__create_url_client)
 
