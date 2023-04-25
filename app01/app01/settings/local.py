@@ -29,8 +29,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-WKHTMLTOPDF_BIN_PATH = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+WKHTMLTOPDF_BIN_PATH = '/usr/local/bin/wkhtmltopdf'
 
 PDFKIT_CONFIG = {
-    'wkhtmltopdf': 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'
+    'wkhtmltopdf': '/usr/local/bin/wkhtmltopdf'
 }
