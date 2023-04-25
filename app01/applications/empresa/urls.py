@@ -1,5 +1,10 @@
 from django.urls import path
 from applications.empresa.api.api import (
+    CargoCreateAPIView,
+    CargoDeleteView,
+    CargoDetailApiView,
+    CargoListApiView,
+    CargoRetriveUpdateView,
     EmpresaCreateAPIView
     , EmpresaListApiView
     , EmpresaDetailApiView
@@ -41,11 +46,11 @@ urlpatterns = [
     path('sucursal/editar/<pk>/', SucursalRetriveUpdateView.as_view(), name='editar-sucursal'),
     path('sucursal/eliminar/<pk>/', SucursalDeleteView.as_view(), name='eliminar-sucursal'),
 
-    path('cargo/add/', SucursalCreateAPIView.as_view(), name='add-cargo'),
-    path('cargo/list/', SucursalListApiView.as_view(), name='list-cargo'),
-    path('cargo/buscar/<pk>/', SucursalDetailApiView.as_view(), name='buscar-cargo'),
-    path('cargo/editar/<pk>/<emp_id>/', SucursalRetriveUpdateView.as_view(), name='editar-cargo'),
-    path('cargo/eliminar/<pk>/', SucursalDeleteView.as_view(), name='eliminar-cargo'),
+    path('cargo/add/', CargoCreateAPIView.as_view(), name='add-cargo'),
+    path('cargo/list/', CargoListApiView.as_view(), name='list-cargo'),
+    path('cargo/buscar/<pk>/', CargoDetailApiView.as_view(), name='buscar-cargo'),
+    path('cargo/editar/<pk>/<emp_id>/', CargoRetriveUpdateView.as_view(), name='editar-cargo'),
+    path('cargo/eliminar/<pk>/', CargoDeleteView.as_view(), name='eliminar-cargo'),
 
     path('grupocentrocosto/add/', GrupoCentroCostoCreateAPIView.as_view(), name='add-grupocentrocosto'),
     path('grupocentrocosto/list/', GrupoCentroCostoListApiView.as_view(), name='list-grupocentrocosto'),

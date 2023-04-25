@@ -371,7 +371,7 @@ class CargoDeleteView(generics.UpdateAPIView):
             cargo.save()
 
             data = {
-                "suc_codigo": cargo.suc_codigo,
+                "car_id": cargo.car_id,
                 "status": "OK",
             }
 
