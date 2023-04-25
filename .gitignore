@@ -8,4 +8,6 @@ settings/
 app01/applications/base/migrations/0001_initial.py
 app01/applications/empresa/migrations/0001_initial.py
 app01/applications/usuario/migrations/0001_initial.py
-app01/app01/settings/local.py
+local.py
+desa.py
+prod.py
