@@ -261,9 +261,6 @@ class UsuarioEmpresaDatosLaboralesUpdateView(generics.UpdateAPIView):
         operation_description="Se actualiza toda la información de un cargo en particular",
         security=[{"Bearer": []}]
     )   
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
-
     def update(self, request, *args, **kwargs):
         # Obtenemos la instancia del colaborador a partir del ID de usuario en la URL
         colaborador_instance = self.get_object()
@@ -271,19 +268,19 @@ class UsuarioEmpresaDatosLaboralesUpdateView(generics.UpdateAPIView):
         # Obtenemos el objeto UsuarioEmpresa del colaborador
         usuario_empresa_object = UsuarioEmpresa.objects.filter(user=colaborador_instance)
 
-        usuario_empresa_serializer = self.user_empresa_serializer(usuario_empresa_object, data=request.data)
+        usuario_empresa_serializer = self.user_empresa_serializer(usuario_empresa_object[0], data=request.data['usuario_empresa'])
         if usuario_empresa_serializer.is_valid():
+            usuario_empresa_serializer.save()
 
             # Creamos un diccionario para guardar los valores de UsuarioEmpresa
             dic_usuario_empresa = {}
 
              # Iteramos sobre los valores de UsuarioEmpresa y los agregamos al diccionario
             for value in usuario_empresa_object:
-                for key, val in value.items():
+                for key, val in vars(value).items():
                     if key in get_key_colaborador_data():
                         dic_usuario_empresa[key] = val
 
-            usuario_empresa_serializer.save()
             return Response(dic_usuario_empresa, status=status.HTTP_200_OK)
         return Response(usuario_empresa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

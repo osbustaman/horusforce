@@ -63,6 +63,7 @@ class UsuarioEmpresaDatosLaboralesSerializers(serializers.ModelSerializer):
             'centrocosto',
             'sucursal',
             'ue_tipotrabajdor',
+            'ue_tipocontrato',
             'ue_fechacontratacion',
             'ue_fecharenovacioncontrato',
             'ue_horassemanales',
@@ -78,24 +79,11 @@ class UsuarioEmpresaDatosLaboralesSerializers(serializers.ModelSerializer):
         )
 
         extra_kwargs = {
-            'user': {'required': True},
-            'empresa': {'required': True},
-            'cargo': {'required': True},
-            'centrocosto': {'required': True},
-            'sucursal': {'required': True},
-            'ue_tipotrabajdor': {'required': True},
-            'ue_fechacontratacion': {'required': True},
-            'ue_fecharenovacioncontrato': {'required': True},
-            'ue_horassemanales': {'required': True},
-            'ue_asignacionfamiliar': {'required': True},
-            'ue_cargasfamiliares': {'required': True},
-            'ue_montoasignacionfamiliar': {'required': True},
-            'ue_sueldobase': {'required': True},
-            'ue_gratificacion': {'required': True},
-            'ue_tipogratificacion': {'required': True},
-            'ue_comiciones': {'required': True},
-            'ue_porcentajecomicion': {'required': True},
-            'ue_semanacorrida': {'required': True},
+            'user': {'required': False},
+            'empresa': {'required': False},
+            'cargo': {'required': False},
+            'centrocosto': {'required': False},
+            'sucursal': {'required': False},
         }
 
 class UsuarioEmSerializers(serializers.Serializer):

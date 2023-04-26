@@ -140,6 +140,13 @@ class UsuarioEmpresa(models.Model):
         ('M', 'Mensual'),
     )
 
+    TIPO_CONTRATO = (
+        (1, 'Plazo Indefinido'),
+        (2, 'Plazo Fijo'),
+        (3, 'Plazo Indefinido 11 años o más'),
+        (4, 'Trabajador de Casa Particular'),
+    )
+
     ue_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Usuario", db_column="ue_usuario", on_delete=models.PROTECT)
     empresa = models.ForeignKey(Empresa, verbose_name="Empresa", db_column="ue_empresa", on_delete=models.PROTECT)
@@ -149,6 +156,7 @@ class UsuarioEmpresa(models.Model):
     
     # DATOS LABORALES
     ue_tipotrabajdor = models.IntegerField("Tipo de trabajador", choices=TIPO_TRABAJADOR, null=True, blank=True)
+    ue_tipocontrato = models.IntegerField("Tipo de contrato", choices=TIPO_CONTRATO, null=True, blank=True)
     ue_fechacontratacion = models.DateField("Fecha de contratacion del usuario", null=True, blank=True)
     ue_fecharenovacioncontrato = models.DateField("Fecha termino de contrato", null=True, blank=True)
     ue_horassemanales = models.IntegerField("Horas trabajadas", null=True, blank=True, default=45)

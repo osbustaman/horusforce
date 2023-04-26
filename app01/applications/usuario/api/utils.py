@@ -7,6 +7,7 @@ def get_key_colaborador_data():
                     'sucursal_id': 'required',
                     'empresa_id': 'required',
                     'ue_tipotrabajdor': 'required',
+                    'ue_tipocontrato': 'required',
                     'ue_fechacontratacion': 'required',
                     'ue_fecharenovacioncontrato': 'required',
                     'ue_horassemanales': 'required',
