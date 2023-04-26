@@ -23,3 +23,6 @@ def get_key_colaborador_data():
                 }
     keys = extra_kwargs.keys()
     return list(keys)
+
+def get_tope_seguro_cesantia():
+    pass

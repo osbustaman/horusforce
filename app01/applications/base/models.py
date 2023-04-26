@@ -111,3 +111,28 @@ class Cliente(TimeStampedModel):
         db_table = 'conf_cliente'
         ordering = ['id']
         unique_together = ('rut_cliente',)
+
+class ParametrosIndicadoresPrevisionales(TimeStampedModel):
+    OPCIONES = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    pip_id = models.AutoField("Key", primary_key=True)
+    pip_codigo = models.CharField("Código del parámetro", max_length=10)
+    pip_descripcion = models.TextField("Descripción", max_length=255)
+    pip_valor = models.CharField("Valor", max_length=50, null=True, blank=True, default=0)
+    pip_rangoini = models.DecimalField("Desde $", max_digits=15, decimal_places=6, null=True, blank=True, default=0)
+    pip_rangofin = models.DecimalField("Hasta $", max_digits=15, decimal_places=6, null=True, blank=True, default=0)
+    pip_factor = models.CharField("Factor", max_length=50)
+    pip_activo = models.CharField("Activo", max_length=1, choices=OPCIONES, default="S")
+
+    def __int__(self):
+        return self.pip_id
+
+    def save(self, *args, **kwargs):
+        super(ParametrosIndicadoresPrevisionales, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "conf_parametros_indicadores_previsionales"
+        ordering = ['pip_id']
