@@ -10,7 +10,7 @@ from drf_yasg.utils import swagger_auto_schema
 
 from django.contrib.auth.models import User
 
-from applications.usuario.api.serializer import ColaboradorSerializers, UsuarioEmSerializers, UsuarioEmpresaDatosLaboralesSerializers, UsuarioSerializers
+from applications.usuario.api.serializer import ColaboradorSerializers, DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers, UsuarioEmSerializers, UsuarioEmpresaDatosLaboralesSerializers, UsuarioSerializers
 from applications.usuario.api.utils import get_key_colaborador_data, get_tope_seguro_cesantia
 from applications.usuario.models import Colaborador, UsuarioEmpresa
 
@@ -287,4 +287,42 @@ class UsuarioEmpresaDatosLaboralesUpdateView(generics.UpdateAPIView):
 
 
 
+"""
+ETAPA 3 DEL LLENADO DE UN COLABORADOR DATOS PREVISIONALES
+"""
+class DatosPrevisionalesColaboradorCreateAPIView(generics.UpdateAPIView):
+    serializer_class = DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers 
 
+    def get_queryset(self):
+        return None
+
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="Registrar datos personales de colaborador",
+        operation_description="Este código define una vista de creación para la entidad 'Colaborador'. Se utiliza el serializador"
+                                +"'ColaboradorSerializers' para validar los datos enviados en la petición POST. Además, también se utiliza"
+                                +"el serializador 'UsuarioSerializers' para validar los datos del usuario asociado al colaborador.\n"
+                                +"Después de validar los datos, se llama al método save() del serializador 'ColaboradorSerializers'" 
+                                +"para guardar el colaborador en la base de datos. Luego, se crea una respuesta que contiene los "
+                                +"datos del colaborador y del usuario asociado, y se envía con el código de estado HTTP 201 (Created).\n"
+                                +"También se utiliza la librería Swagger para documentar la API.",
+        security=[{"Bearer": []}]
+    )
+    def post(self, request, *args, **kwargs):
+
+
+        
+
+        
+
+        # Crea un diccionario con los datos del colaborador y el usuario
+        response_data = {
+            "usuario": 'hola mundo'
+            #'colaborador': colaborador_serializer.data,  # Obtiene los datos serializados del colaborador
+            #'user': vars(user_serializer)['_kwargs']['data'],  # Obtiene los datos serializados del usuario
+        }
+
+        # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+    

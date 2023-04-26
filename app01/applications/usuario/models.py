@@ -156,7 +156,7 @@ class UsuarioEmpresa(models.Model):
     
     # DATOS LABORALES
     ue_tipotrabajdor = models.IntegerField("Tipo de trabajador", choices=TIPO_TRABAJADOR, null=True, blank=True)
-    ue_tipocontrato = models.CharField("Tipo de contrato", choices=TIPO_CONTRATO, max_length=5, null=True, blank=True)
+    ue_tipocontrato = models.CharField("Tipo de contrato", choices=TIPO_CONTRATO, max_length=5, null=True, blank=True, default=None)
     ue_fechacontratacion = models.DateField("Fecha de contratacion del usuario", null=True, blank=True)
     ue_fecharenovacioncontrato = models.DateField("Fecha termino de contrato", null=True, blank=True)
     ue_horassemanales = models.IntegerField("Horas trabajadas", null=True, blank=True, default=45)

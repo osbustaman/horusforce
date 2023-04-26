@@ -31,8 +31,8 @@ def get_tope_seguro_cesantia(pip_codigo):
     pip_object = ParametrosIndicadoresPrevisionales.objects.get(pip_codigo=pip_codigo)
 
     data = {
-        "porcentaje_empleador": f"{pip_object.pip_rangoini}%",
-        "porcentaje_empleador": f"{pip_object.pip_rangofin if not pip_object.pip_rangofin else 0}%"  
+        "porcentaje_empleador": f"{round(pip_object.pip_rangoini, 1)}%",
+        "porcentaje_empleado": f"{round(pip_object.pip_rangofin if not pip_object.pip_rangofin else 0, 1)}%"  
     }
 
     return data

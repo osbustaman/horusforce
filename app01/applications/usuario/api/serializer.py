@@ -91,3 +91,11 @@ class UsuarioEmSerializers(serializers.Serializer):
     class Meta:
         model = User
         fields = ('__all__')
+
+class DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
+    user = serializers.IntegerField(required=True)
+    afp = serializers.IntegerField(required=True)
+    salud = serializers.IntegerField(required=True)
+    ue_ufisapre = serializers.CharField(max_length=100, required=True)
+    ue_funisapre = serializers.CharField(max_length=100, required=True)
+    ue_cotizacion = serializers.FloatField(required=True)
