@@ -141,10 +141,10 @@ class UsuarioEmpresa(models.Model):
     )
 
     TIPO_CONTRATO = (
-        (1, 'Plazo Indefinido'),
-        (2, 'Plazo Fijo'),
-        (3, 'Plazo Indefinido 11 años o más'),
-        (4, 'Trabajador de Casa Particular'),
+        ('PI', 'Plazo Indefinido'),
+        ('PF', 'Plazo Fijo'),
+        ('PI11', 'Plazo Indefinido 11 años o más'),
+        ('TCP', 'Trabajador de Casa Particular'),
     )
 
     ue_id = models.AutoField("Key", primary_key=True)
@@ -156,7 +156,7 @@ class UsuarioEmpresa(models.Model):
     
     # DATOS LABORALES
     ue_tipotrabajdor = models.IntegerField("Tipo de trabajador", choices=TIPO_TRABAJADOR, null=True, blank=True)
-    ue_tipocontrato = models.IntegerField("Tipo de contrato", choices=TIPO_CONTRATO, null=True, blank=True)
+    ue_tipocontrato = models.CharField("Tipo de contrato", choices=TIPO_CONTRATO, max_length=5, null=True, blank=True)
     ue_fechacontratacion = models.DateField("Fecha de contratacion del usuario", null=True, blank=True)
     ue_fecharenovacioncontrato = models.DateField("Fecha termino de contrato", null=True, blank=True)
     ue_horassemanales = models.IntegerField("Horas trabajadas", null=True, blank=True, default=45)

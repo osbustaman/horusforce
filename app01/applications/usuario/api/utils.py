@@ -1,4 +1,7 @@
 
+from applications.base.models import ParametrosIndicadoresPrevisionales
+
+
 def get_key_colaborador_data():
     extra_kwargs = {
                     'user_id': 'required',
@@ -24,5 +27,12 @@ def get_key_colaborador_data():
     keys = extra_kwargs.keys()
     return list(keys)
 
-def get_tope_seguro_cesantia():
-    pass
+def get_tope_seguro_cesantia(pip_codigo):
+    pip_object = ParametrosIndicadoresPrevisionales.objects.get(pip_codigo=pip_codigo)
+
+    data = {
+        "porcentaje_empleador": f"{pip_object.pip_rangoini}%",
+        "porcentaje_empleador": f"{pip_object.pip_rangofin if not pip_object.pip_rangofin else 0}%"  
+    }
+
+    return data

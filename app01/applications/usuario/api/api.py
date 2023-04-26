@@ -11,7 +11,7 @@ from drf_yasg.utils import swagger_auto_schema
 from django.contrib.auth.models import User
 
 from applications.usuario.api.serializer import ColaboradorSerializers, UsuarioEmSerializers, UsuarioEmpresaDatosLaboralesSerializers, UsuarioSerializers
-from applications.usuario.api.utils import get_key_colaborador_data
+from applications.usuario.api.utils import get_key_colaborador_data, get_tope_seguro_cesantia
 from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 # Define el objeto Parameter para el encabezado Authorization
@@ -197,7 +197,8 @@ class UsuarioEmpresaDatosLaboralesCreateAPIView(generics.CreateAPIView):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             response_data = {
-                "data_serializer": serializer.data
+                "data_serializer": serializer.data,
+                "seguro_cesantia": get_tope_seguro_cesantia(request.data['ue_tipocontrato'])
             }
             return Response(response_data, status=status.HTTP_201_CREATED)
         except serializers.ValidationError as e:
