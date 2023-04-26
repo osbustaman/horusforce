@@ -47,7 +47,8 @@ class ColaboradorSerializers(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        usuario_data = validated_data.pop('user')
+        #usuario_data = validated_data.pop('user')
+        usuario_data = self.initial_data['user']
         usuario = User.objects.create_user(**usuario_data)
         colaborador = Colaborador.objects.create(user=usuario, **validated_data)
         return colaborador

@@ -56,13 +56,46 @@ class ColaboradorCreateAPIView(generics.CreateAPIView):
         colaborador_serializer.is_valid(raise_exception=True)
         user_serializer.is_valid(raise_exception=True)
         
-        # Guarda el colaborador en la base de datos
-        colaborador_serializer.save()
+        # Guarda el colaborador en la base de datos y asigna la instancia de colaborador creada a una variable
+        colaborador = colaborador_serializer.save()
+
+        usuario = {
+            "col_id": colaborador.user.id,
+
+            "username": colaborador.user.username,
+            "first_name": colaborador.user.first_name,
+            "last_name": colaborador.user.last_name,
+            "email": colaborador.user.email,
+
+            "col_extranjero": colaborador.col_extranjero,
+            "col_rut": colaborador.col_rut,
+            "col_sexo": colaborador.col_sexo,
+            "col_fechanacimiento": colaborador.col_fechanacimiento,
+            "col_estadocivil": colaborador.col_estadocivil,
+            "col_direccion": colaborador.col_direccion,
+            "pais": colaborador.pais.pa_id,
+            "region": colaborador.region.re_id,
+            "comuna": colaborador.comuna.com_id,
+            "col_tipousuario": colaborador.col_tipousuario,
+            "col_profesion": colaborador.col_profesion,
+            "col_titulo": colaborador.col_titulo,
+            "col_formapago": colaborador.col_formapago,
+            "banco": colaborador.banco.ban_id,
+            "col_tipocuenta": colaborador.col_tipocuenta,
+            "col_cuentabancaria": colaborador.col_cuentabancaria,
+            "col_usuarioactivo": colaborador.col_usuarioactivo,
+            "col_licenciaconducir": colaborador.col_licenciaconducir,
+            "col_tipolicencia": colaborador.col_tipolicencia,
+            "col_fotousuario": colaborador.col_fotousuario,
+        }
+
+        #usuario = colaborador.user
 
         # Crea un diccionario con los datos del colaborador y el usuario
         response_data = {
-            'colaborador': colaborador_serializer.data,  # Obtiene los datos serializados del colaborador
-            'user': vars(user_serializer)['_kwargs']['data'],  # Obtiene los datos serializados del usuario
+            "usuario": usuario
+            #'colaborador': colaborador_serializer.data,  # Obtiene los datos serializados del colaborador
+            #'user': vars(user_serializer)['_kwargs']['data'],  # Obtiene los datos serializados del usuario
         }
 
         # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
