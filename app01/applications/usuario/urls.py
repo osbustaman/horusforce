@@ -1,6 +1,7 @@
 from django.urls import path
 
 from applications.usuario.api.api import (
+    ApvAhorroVoluntarioColaboradorCreateAPIView,
     ColaboradorCreateAPIView
     , ColaboradorUpdateAPIView
     , ColaboradorDetailApiView,
@@ -8,6 +9,7 @@ from applications.usuario.api.api import (
     , UsuarioEmpresaDatosLaboralesCreateAPIView
     , UsuarioEmpresaDatosLaboralesDetailApiView
     , UsuarioEmpresaDatosLaboralesUpdateView
+    , FiniquitoColaboradorCreateAPIView
 )
 
 
@@ -21,4 +23,6 @@ urlpatterns = [
     path('colaborador/edit/labor-data/<pk>/', UsuarioEmpresaDatosLaboralesUpdateView.as_view(), name='edit-labor-data-colaborador'),
     path('colaborador/search/labor-data/<pk>/', UsuarioEmpresaDatosLaboralesDetailApiView.as_view(), name='search-labor-data-colaborador'),
     path('colaborador/add/datos-previsionales/<user_id>/', DatosPrevisionalesColaboradorCreateAPIView.as_view(), name='add-datos-previsionales'),
+    path('colaborador/add/apv/ahorro-voluntario/<user_id>/', ApvAhorroVoluntarioColaboradorCreateAPIView.as_view(), name='add-apv-ahorro-voluntario'),
+    path('colaborador/add/dato/finiquito/<user_id>/', FiniquitoColaboradorCreateAPIView.as_view(), name='add-finiquito'),
 ]

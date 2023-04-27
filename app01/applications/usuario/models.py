@@ -175,6 +175,7 @@ class UsuarioEmpresa(models.Model):
     ue_tieneapv = models.CharField("Tiene APV", choices=OPCIONES, max_length=1, default="N", null=True, blank=True)
     ue_tipomontoapv = models.CharField("Tipo de monto", choices=TIPO_MONTO, null=True, blank=True, max_length=1, default="M")
     afp_apv = models.ForeignKey(Afp, verbose_name='AFP APV', db_column='ue_afp_apv', related_name="afp_apv", null=True, blank=True, on_delete=models.PROTECT)
+    ue_entidad_apv = models.CharField("Entidad APV", max_length=150, default="", null=True, blank=True)
     ue_cotizacionvoluntaria = models.DecimalField("Cotización voluntaria", max_digits=15, decimal_places=2, null=True, blank=True)
     ue_tieneahorrovoluntario = models.CharField("Tiene ahorro voluntario", choices=OPCIONES, max_length=1, default="N", null=True, blank=True)
     ue_ahorrovoluntario = models.DecimalField("Ahorro Voluntario", max_digits=15, decimal_places=2, null=True, blank=True)

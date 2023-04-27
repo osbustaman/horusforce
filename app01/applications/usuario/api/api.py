@@ -4,13 +4,24 @@ from django.http import Http404
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework import serializers
+from rest_framework.exceptions import NotFound, ValidationError
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from django.contrib.auth.models import User
+from applications.base.utils import indicadores_economicos
+from applications.empresa.models import Afp, Salud
 
-from applications.usuario.api.serializer import ColaboradorSerializers, DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers, UsuarioEmSerializers, UsuarioEmpresaDatosLaboralesSerializers, UsuarioSerializers
+from applications.usuario.api.serializer import (
+    ApvAhorroVoluntarioUsuarioEmpresaDatosLaboralesSerializers
+    , ColaboradorSerializers
+    , DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers
+    , FiniquitoUsuarioEmpresaDatosLaboralesSerializers
+    , UsuarioEmSerializers
+    , UsuarioEmpresaDatosLaboralesSerializers
+    , UsuarioSerializers
+)
 from applications.usuario.api.utils import get_key_colaborador_data, get_tope_seguro_cesantia
 from applications.usuario.models import Colaborador, UsuarioEmpresa
 
@@ -61,12 +72,10 @@ class ColaboradorCreateAPIView(generics.CreateAPIView):
 
         usuario = {
             "col_id": colaborador.user.id,
-
             "username": colaborador.user.username,
             "first_name": colaborador.user.first_name,
             "last_name": colaborador.user.last_name,
             "email": colaborador.user.email,
-
             "col_extranjero": colaborador.col_extranjero,
             "col_rut": colaborador.col_rut,
             "col_sexo": colaborador.col_sexo,
@@ -285,17 +294,14 @@ class UsuarioEmpresaDatosLaboralesUpdateView(generics.UpdateAPIView):
             return Response(dic_usuario_empresa, status=status.HTTP_200_OK)
         return Response(usuario_empresa_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 """
 ETAPA 3 DEL LLENADO DE UN COLABORADOR DATOS PREVISIONALES
 """
-class DatosPrevisionalesColaboradorCreateAPIView(generics.UpdateAPIView):
+class DatosPrevisionalesColaboradorCreateAPIView(generics.CreateAPIView):
+
+    queryset = UsuarioEmpresa.objects.all()
     serializer_class = DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers 
     lookup_field = 'user_id'
-
-    def get_queryset(self):
-        return None
 
     @swagger_auto_schema(
         manual_parameters=[header_param],
@@ -304,24 +310,191 @@ class DatosPrevisionalesColaboradorCreateAPIView(generics.UpdateAPIView):
         security=[{"Bearer": []}]
     )
     def post(self, request, *args, **kwargs):
+        try:
+            ue_cotizacion = 0
 
-        # Obtenemos la instancia del colaborador a partir del ID de usuario en la URL
-        # colaborador_instance = self.get_object()
+            # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
+            usuario_empresa = UsuarioEmpresa.objects.get(user__id=int(self.kwargs['user_id']))
+            
+            # Obtener los objetos Afp y Salud correspondientes a los IDs enviados en la petición
+            afp_id = request.data.get('afp')
+            salud_id = request.data.get('salud')
+            try:
+                usuario_empresa.afp = Afp.objects.get(afp_id=afp_id)
+            except Afp.DoesNotExist:
+                response_data = {
+                    "mensaje": f"No se encontró la AFP con ID {afp_id}"
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
+            try:
+                usuario_empresa.salud = Salud.objects.get(sa_id=salud_id)
+            except Salud.DoesNotExist:
+                response_data = {
+                    "mensaje": f"No se encontró la salud con ID {salud_id}"
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+            # Validar que si la salud no es FONASA, se especifiquen valores para ue_ufisapre y ue_funisapre
+            if not salud_id == 1:
+                ue_ufisapre = request.data.get('ue_ufisapre')
+                ue_funisapre = request.data.get('ue_funisapre')
+                if ue_ufisapre is None or ue_funisapre is None:
+                    response_data = {
+                        "mensaje": "Para salud distintas de FONASA, debe especificar ue_ufisapre y ue_funisapre"
+                    }
+                    return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                usuario_empresa.ue_ufisapre = ue_ufisapre
+                usuario_empresa.ue_funisapre = ue_funisapre
+
+                # Calcular la cotización de UF para la Unidad de Empleador (UE)
+                uf = indicadores_economicos("uf")
+                fecha_actual = uf['serie'][0]['fecha']
+                valor_actual = uf['serie'][0]['valor']
+                ue_cotizacion = round(float(usuario_empresa.ue_ufisapre) * float(valor_actual), 0)
+
+            usuario_empresa.save()
+
+            # Crea un diccionario con los datos del colaborador y el usuario
+            response_data = {
+                "user": usuario_empresa.user.id,
+                "afp": usuario_empresa.afp.afp_id,
+                "salud": usuario_empresa.salud.sa_id,
+                "ue_ufisapre": usuario_empresa.ue_ufisapre,
+                "ue_funisapre": usuario_empresa.ue_funisapre,
+                "ue_cotizacion": ue_cotizacion,
+            }
+
+            # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
+            return Response(response_data, status=status.HTTP_201_CREATED)
         
+        except ValueError:
+            response_data = {
+                "mensaje": "Datos inválidos en la petición"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UsuarioEmpresa.DoesNotExist:
+            response_data = {
+                "mensaje": "No se encontró el usuario especificado"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+        except (KeyError, TypeError):
+            response_data = {
+                "mensaje": "Petición mal formada"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+"""
+ETAPA 4 DEL LLENADO DE APV Y AHORRO VOLUNTARIO
+"""
+class ApvAhorroVoluntarioColaboradorCreateAPIView(generics.CreateAPIView):
 
-        usuario_empresa = UsuarioEmpresa.objects.get(user__id = self.kwargs['user_id'])
+    queryset = UsuarioEmpresa.objects.all()
+    serializer_class = ApvAhorroVoluntarioUsuarioEmpresaDatosLaboralesSerializers 
+    lookup_field = 'user_id'
 
-        print(" -- ")
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="",
+        operation_description="",
+        security=[{"Bearer": []}]
+    )
+    def post(self, request, *args, **kwargs):
+        
+        try:
+            # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
+            usuario_empresa = UsuarioEmpresa.objects.get(user__id=int(self.kwargs['user_id']))
 
-        # Crea un diccionario con los datos del colaborador y el usuario
-        response_data = {
-            "usuario": 'hola mundo'
-            #'colaborador': colaborador_serializer.data,  # Obtiene los datos serializados del colaborador
-            #'user': vars(user_serializer)['_kwargs']['data'],  # Obtiene los datos serializados del usuario
-        }
+            if request.data['ue_tieneapv'] == "S":
+                usuario_empresa.ue_tieneapv = request.data['ue_tieneapv']
+                usuario_empresa.ue_tipomontoapv = request.data['ue_tipomontoapv']
+                usuario_empresa.ue_entidad_apv = request.data['ue_entidad_apv']
+                usuario_empresa.ue_cotizacionvoluntaria = request.data['ue_cotizacionvoluntaria']
+            else:
+                usuario_empresa.ue_tieneapv = "N"
 
-        # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
-        return Response(response_data, status=status.HTTP_201_CREATED)
+            if request.data['ue_tieneahorrovoluntario'] == "S":
+                usuario_empresa.ue_tieneahorrovoluntario = request.data['ue_tieneahorrovoluntario']
+                usuario_empresa.ue_ahorrovoluntario = request.data['ue_ahorrovoluntario']
+            else:
+                usuario_empresa.ue_tieneahorrovoluntario = "N"
+            usuario_empresa.save()
 
-    
+            # Crea un diccionario con los datos del colaborador y el usuario
+            response_data = {
+                "ue_user_id": int(self.kwargs['user_id']),
+                "ue_tieneapv": usuario_empresa.ue_tieneapv,
+                "ue_tipomontoapv": usuario_empresa.ue_tipomontoapv,
+                "ue_entidad_apv": usuario_empresa.ue_entidad_apv,
+                "ue_cotizacionvoluntaria": usuario_empresa.ue_cotizacionvoluntaria,
+                "ue_tieneahorrovoluntario": usuario_empresa.ue_tieneahorrovoluntario,
+                "ue_ahorrovoluntario": usuario_empresa.ue_ahorrovoluntario
+            }
+
+            # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        
+        except ValueError:
+            response_data = {
+                "mensaje": "Datos inválidos en la petición"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UsuarioEmpresa.DoesNotExist:
+            response_data = {
+                "mensaje": "No se encontró el usuario especificado"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+        except (KeyError, TypeError):
+            response_data = {
+                "mensaje": "Petición mal formada"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+"""
+ETAPA 5 DEL LLENADO DE DATOS DE FINIQUITO
+"""
+class FiniquitoColaboradorCreateAPIView(generics.CreateAPIView):
+
+    queryset = UsuarioEmpresa.objects.all()
+    serializer_class = FiniquitoUsuarioEmpresaDatosLaboralesSerializers 
+    lookup_field = 'user_id'
+
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="",
+        operation_description="",
+        security=[{"Bearer": []}]
+    )
+    def post(self, request, *args, **kwargs):
+        try:
+            # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
+            usuario_empresa = UsuarioEmpresa.objects.get(user__id=int(self.kwargs['user_id']))
+            usuario_empresa.ue_fechanotificacioncartaaviso = request.data['ue_fechanotificacioncartaaviso']
+            usuario_empresa.ue_fechatermino = request.data['ue_fechatermino']
+            usuario_empresa.ue_entidad_apv = request.data['ue_entidad_apv']
+            usuario_empresa.ue_cotizacionvoluntaria = request.data['ue_cotizacionvoluntaria']
+            usuario_empresa.ue_tieneahorrovoluntario = request.data['ue_tieneahorrovoluntario']
+            usuario_empresa.ue_ahorrovoluntario = request.data['ue_ahorrovoluntario']
+            usuario_empresa.save()
+
+        except ValueError:
+            response_data = {
+                "mensaje": "Datos inválidos en la petición"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UsuarioEmpresa.DoesNotExist:
+            response_data = {
+                "mensaje": "No se encontró el usuario especificado"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+        except (KeyError, TypeError):
+            response_data = {
+                "mensaje": "Petición mal formada"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 

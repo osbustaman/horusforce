@@ -1,8 +1,11 @@
 import re
 import django
-from django import conf
 import psycopg2
 import os
+import json
+import requests
+import datetime
+
 
 import pandas as pd
 import pdfkit
@@ -10,6 +13,7 @@ import base64
 
 from django.core.management import call_command
 from django.template.loader import get_template
+from django import conf
 
 from decouple import config
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -17,6 +21,35 @@ from app01.settings.local import WKHTMLTOPDF_BIN_PATH
 
 from applications.base.models import Cliente, Comuna, Pais, Region
 
+
+def indicadores_economicos(indicador):
+    indicadores = [
+        'uf'
+        , 'ivp'
+        , 'dolar'
+        , 'dolar_intercambio'
+        , 'euro'
+        , 'ipc'
+        , 'utm'
+        , 'imacec'
+        , 'tpm'
+        , 'libra_cobre'
+        , 'tasa_desempleo'
+        , 'bitcoin'
+    ]
+
+    fecha_actual = datetime.datetime.now()
+
+    dia_actual = fecha_actual.day
+    mes_actual = fecha_actual.month
+    anio_actual = fecha_actual.year
+    fecha_formateada = fecha_actual.strftime("%d-%m-%Y")
+
+    url = f'https://mindicador.cl/api/{indicador}/{fecha_formateada}'
+    response = requests.get(url)
+    data = json.loads(response.text.encode("utf-8"))
+    pretty_json = json.dumps(data, indent=2)
+    return data
 
 def getCliente(request):
     return Cliente.objects.filter(rut_cliente = request['rut_cliente']).exists()

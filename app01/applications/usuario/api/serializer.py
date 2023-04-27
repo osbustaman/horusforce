@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from applications.base.utils import validarRut
+from applications.empresa.models import Afp, Salud
 from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 class UsuarioSerializers(serializers.Serializer):
@@ -92,21 +93,35 @@ class UsuarioEmSerializers(serializers.Serializer):
         model = User
         fields = ('__all__')
 
-class DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers(serializers.ModelSerializer):
-    """user = serializers.IntegerField(required=True)
+class AfpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Afp
+        fields = ('__all__')
+
+class SaludSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Salud
+        fields = ('__all__')
+
+class DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
+    user = serializers.IntegerField(required=True)
     afp = serializers.IntegerField(required=True)
     salud = serializers.IntegerField(required=True)
     ue_ufisapre = serializers.CharField(max_length=100, required=True)
     ue_funisapre = serializers.CharField(max_length=100, required=True)
-    ue_cotizacion = serializers.FloatField(required=True)"""
 
-    class Meta:
-        model = UsuarioEmpresa
-        fields = (
-            'afp'
-            , 'salud'
-            , 'ue_ufisapre'
-            , 'ue_funisapre'
-            , 'ue_cotizacion'
-        )
+class ApvAhorroVoluntarioUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
+    ue_tieneapv = serializers.CharField(required=True)
+    ue_tipomontoapv = serializers.CharField(required=True)
+    ue_entidad_apv = serializers.CharField(required=True)
+    ue_cotizacionvoluntaria = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
+    ue_tieneahorrovoluntario = serializers.CharField(required=True)
+    ue_ahorrovoluntario = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
 
+class FiniquitoUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
+    ue_fechanotificacioncartaaviso = serializers.DateField(required=True)
+    ue_fechatermino = serializers.DateField(required=True)
+    ue_entidad_apv = serializers.CharField(required=True)
+    ue_cotizacionvoluntaria = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
+    ue_tieneahorrovoluntario = serializers.CharField(required=True)
+    ue_ahorrovoluntario = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
