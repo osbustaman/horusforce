@@ -92,10 +92,21 @@ class UsuarioEmSerializers(serializers.Serializer):
         model = User
         fields = ('__all__')
 
-class DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
-    user = serializers.IntegerField(required=True)
+class DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers(serializers.ModelSerializer):
+    """user = serializers.IntegerField(required=True)
     afp = serializers.IntegerField(required=True)
     salud = serializers.IntegerField(required=True)
     ue_ufisapre = serializers.CharField(max_length=100, required=True)
     ue_funisapre = serializers.CharField(max_length=100, required=True)
-    ue_cotizacion = serializers.FloatField(required=True)
+    ue_cotizacion = serializers.FloatField(required=True)"""
+
+    class Meta:
+        model = UsuarioEmpresa
+        fields = (
+            'afp'
+            , 'salud'
+            , 'ue_ufisapre'
+            , 'ue_funisapre'
+            , 'ue_cotizacion'
+        )
+

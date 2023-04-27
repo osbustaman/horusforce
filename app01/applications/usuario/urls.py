@@ -20,5 +20,5 @@ urlpatterns = [
     path('colaborador/add/labor-data/<user_id>/', UsuarioEmpresaDatosLaboralesCreateAPIView.as_view(), name='add-labor-data-colaborador'),
     path('colaborador/edit/labor-data/<pk>/', UsuarioEmpresaDatosLaboralesUpdateView.as_view(), name='edit-labor-data-colaborador'),
     path('colaborador/search/labor-data/<pk>/', UsuarioEmpresaDatosLaboralesDetailApiView.as_view(), name='search-labor-data-colaborador'),
-    path('colaborador/add/datos-previsionales/<pk>/', DatosPrevisionalesColaboradorCreateAPIView.as_view(), name='add-datos-previsionales'),
+    path('colaborador/add/datos-previsionales/<user_id>/', DatosPrevisionalesColaboradorCreateAPIView.as_view(), name='add-datos-previsionales'),
 ]
