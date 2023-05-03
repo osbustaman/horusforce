@@ -17,3 +17,4 @@ app01/applications/usuario/migrations/0004_alter_usuarioempresa_ue_tipocontrato.
 app01/applications/base/migrations/0002_parametrosindicadoresprevisionales.py
 app01/applications/usuario/migrations/0005_usuarioempresa_ue_entidad_apv.py
 app01/applications/base/migrations/0004_tablageneral.py
+app01/applications/usuario/migrations/0004_usuarioempresa_ue_entidad_apv.py
