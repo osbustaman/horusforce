@@ -5,7 +5,8 @@ from applications.usuario.api.api import (
     ColaboradorCreateAPIView
     , ColaboradorUpdateAPIView
     , ColaboradorDetailApiView,
-    DatosPrevisionalesColaboradorCreateAPIView
+    DatosPrevisionalesColaboradorCreateAPIView,
+    DatosPrevisionalesColaboradorDetailApiView
     , UsuarioEmpresaDatosLaboralesCreateAPIView
     , UsuarioEmpresaDatosLaboralesDetailApiView
     , UsuarioEmpresaDatosLaboralesUpdateView
@@ -26,6 +27,7 @@ urlpatterns = [
 
 
     path('colaborador/add/datos-previsionales/<user_id>/', DatosPrevisionalesColaboradorCreateAPIView.as_view(), name='add-datos-previsionales'),
+    path('colaborador/search/datos-previsionales/<user_id>/', DatosPrevisionalesColaboradorDetailApiView.as_view(), name='search-datos-previsionales'),
 
 
     

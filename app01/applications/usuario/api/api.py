@@ -386,10 +386,12 @@ class DatosPrevisionalesColaboradorCreateAPIView(generics.CreateAPIView):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
         
-class DatosPrevisionalesColaboradorRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
+class DatosPrevisionalesColaboradorDetailApiView(generics.RetrieveAPIView):
     serializer_class = DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers 
     lookup_field = 'user_id'
+
+    def get_queryset(self):
+        return None
 
     # Agregamos la documentación de Swagger para esta vista
     @swagger_auto_schema(
@@ -399,12 +401,41 @@ class DatosPrevisionalesColaboradorRetrieveAPIView(generics.RetrieveAPIView):
         security=[{"Bearer": []}]
     )
     def get(self, request, *args, **kwargs):
+
+        try:
+            # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
+            usuario_empresa = UsuarioEmpresa.objects.filter(user__id=int(self.kwargs['user_id'])).first()
+
+            # Calcular la cotización de UF para la Unidad de Empleador (UE)
+            uf = indicadores_economicos("uf")
+            fecha_actual = uf['serie'][0]['fecha']
+            valor_actual = uf['serie'][0]['valor']
+            ue_cotizacion = round(float(usuario_empresa.ue_ufisapre) * float(valor_actual), 0)
+
+            # Crea un diccionario con los datos del colaborador y el usuario
+            response_data = {
+                "user": usuario_empresa.user.id,
+                "afp": usuario_empresa.afp.afp_id,
+                "salud": usuario_empresa.salud.sa_id,
+                "ue_ufisapre": usuario_empresa.ue_ufisapre,
+                "ue_funisapre": usuario_empresa.ue_funisapre,
+                "ue_cotizacion": ue_cotizacion,
+            }
+
+            # Retornamos la información de UsuarioEmpresa en un diccionario
+            return Response(response_data, status=status.HTTP_201_CREATED)
         
-        # Obtenemos la instancia del colaborador a partir del ID de usuario en la URL
-        colaborador_instance = self.get_object()
-
-
-
+        except AttributeError as err:
+            response_data = {
+                "mensaje": err.args[0]
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UsuarioEmpresa.DoesNotExist:
+            response_data = {
+                "mensaje": "No se encontró el usuario especificado"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
 
 """
