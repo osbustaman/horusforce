@@ -1,7 +1,7 @@
 from django.db import models
 #from model_utils.models import TimeStampedModel
 from django.contrib.auth.models import User
-from applications.base.models import Comuna, Pais, Region
+from applications.base.models import Comuna, Pais, Region, TablaGeneral
 
 from applications.empresa.models import (
     Afp
@@ -199,7 +199,7 @@ class UsuarioEmpresa(models.Model):
     # TERMINO RELACION LABORAL
     ue_fechanotificacioncartaaviso = models.DateField("Fecha de notificacion carta aviso", null=True, blank=True)
     ue_fechatermino = models.DateField("Fecha de termino relacion laboral", null=True, blank=True, default=None)
-    ue_cuasal = models.TextField("Causal", null=True, blank=True)
+    ue_cuasal = models.ForeignKey(TablaGeneral, verbose_name="TablaGeneral", db_column="ue_causal", on_delete=models.PROTECT, null=True, blank=True)
     ue_fundamento = models.TextField("Fundamento", null=True, blank=True)
     ue_tiponoticacion = models.CharField("Tipo de notificacion", choices=NOTIFICACION, max_length=1, null=True, blank=True)
 
@@ -216,3 +216,35 @@ class UsuarioEmpresa(models.Model):
     class Meta:
         db_table = 'usu_usuario_empresa'
         ordering = ['ue_id']
+
+
+class Haberes(models.Model):
+    TIPO = (
+        ('', '--- Seleccione ---'),
+        ('HI', 'Haberes imponible'),
+        ('HNI', 'Haberes no imponibles'),
+        ('F', 'Finiquito'),
+        ('D', 'Descuento'),
+    )
+
+    OPCIONES = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    hab_id = models.AutoField("Key", primary_key=True)
+    hab_nombre = models.CharField("Nombre", max_length=70)
+    hab_monto = models.DecimalField("Monto", max_digits=15, decimal_places=6)
+    hab_tipo = models.CharField("Tipo haber", choices=TIPO, max_length=3, null=True, blank=True, default=None)
+    user = models.ForeignKey(User, verbose_name="Usuario", db_column="hab_usuario", on_delete=models.PROTECT)
+    hab_activo = models.CharField("Haber activo", choices=OPCIONES, max_length=1, default="S")
+
+    def __int__(self):
+        return self.hab_id
+
+    def save(self, *args, **kwargs):
+        super(Haberes, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'usu_haberessa'
+        ordering = ['hab_id']

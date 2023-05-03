@@ -119,9 +119,9 @@ class ApvAhorroVoluntarioUsuarioEmpresaDatosLaboralesSerializers(serializers.Ser
     ue_ahorrovoluntario = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
 
 class FiniquitoUsuarioEmpresaDatosLaboralesSerializers(serializers.Serializer):
+    ue_tiponoticacion = serializers.CharField(required=True)
     ue_fechanotificacioncartaaviso = serializers.DateField(required=True)
     ue_fechatermino = serializers.DateField(required=True)
-    ue_entidad_apv = serializers.CharField(required=True)
-    ue_cotizacionvoluntaria = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
-    ue_tieneahorrovoluntario = serializers.CharField(required=True)
-    ue_ahorrovoluntario = serializers.DecimalField(required=True, max_digits=15, decimal_places=2)
+    ue_causal = serializers.IntegerField(required=True)
+    ue_fundamento = serializers.CharField(required=True)
+    

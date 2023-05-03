@@ -23,7 +23,7 @@ from applications.usuario.api.serializer import (
     , UsuarioSerializers
 )
 from applications.usuario.api.utils import get_key_colaborador_data, get_tope_seguro_cesantia
-from applications.usuario.models import Colaborador, UsuarioEmpresa
+from applications.usuario.models import Colaborador, Haberes, UsuarioEmpresa
 
 # Define el objeto Parameter para el encabezado Authorization
 header_param = openapi.Parameter(
@@ -464,12 +464,14 @@ class ApvAhorroVoluntarioColaboradorCreateAPIView(generics.CreateAPIView):
                 usuario_empresa.ue_tipomontoapv = request.data['ue_tipomontoapv']
                 usuario_empresa.ue_entidad_apv = request.data['ue_entidad_apv']
                 usuario_empresa.ue_cotizacionvoluntaria = request.data['ue_cotizacionvoluntaria']
+
             else:
                 usuario_empresa.ue_tieneapv = "N"
 
             if request.data['ue_tieneahorrovoluntario'] == "S":
                 usuario_empresa.ue_tieneahorrovoluntario = request.data['ue_tieneahorrovoluntario']
                 usuario_empresa.ue_ahorrovoluntario = request.data['ue_ahorrovoluntario']
+
             else:
                 usuario_empresa.ue_tieneahorrovoluntario = "N"
             usuario_empresa.save()
@@ -504,7 +506,59 @@ class ApvAhorroVoluntarioColaboradorCreateAPIView(generics.CreateAPIView):
             response_data = {
                 "mensaje": "Petición mal formada"
             }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+class ApvAhorroVoluntarioColaboradorDetailApiView(generics.RetrieveAPIView):
+
+    serializer_class = DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers 
+    lookup_field = 'user_id'
+
+    def get_queryset(self):
+        return None
+
+    # Agregamos la documentación de Swagger para esta vista
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="",
+        operation_description="",
+        security=[{"Bearer": []}]
+    )
+    def get(self, request, *args, **kwargs):
+        
+        try:
+            # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
+            usuario_empresa = UsuarioEmpresa.objects.get(user__id=int(self.kwargs['user_id'])) 
+        # Crea un diccionario con los datos del colaborador y el usuario
+            response_data = {
+                "ue_user_id": int(self.kwargs['user_id']),
+                "ue_tieneapv": usuario_empresa.ue_tieneapv,
+                "ue_tipomontoapv": usuario_empresa.ue_tipomontoapv,
+                "ue_entidad_apv": usuario_empresa.ue_entidad_apv,
+                "ue_cotizacionvoluntaria": usuario_empresa.ue_cotizacionvoluntaria,
+                "ue_tieneahorrovoluntario": usuario_empresa.ue_tieneahorrovoluntario,
+                "ue_ahorrovoluntario": usuario_empresa.ue_ahorrovoluntario
+            }
+
+            # Retorna una respuesta con los datos y el código de estado HTTP 201 (Created)
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        
+        except ValueError:
+            response_data = {
+                "mensaje": "Datos inválidos en la petición"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UsuarioEmpresa.DoesNotExist:
+            response_data = {
+                "mensaje": "No se encontró el usuario especificado"
+            }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
+        
+        except (KeyError, TypeError):
+            response_data = {
+                "mensaje": "Petición mal formada"
+            }
+            return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         
 """
 ETAPA 5 DEL LLENADO DE DATOS DE FINIQUITO
@@ -525,12 +579,12 @@ class FiniquitoColaboradorCreateAPIView(generics.CreateAPIView):
         try:
             # Obtener el objeto UsuarioEmpresa correspondiente al ID de usuario especificado
             usuario_empresa = UsuarioEmpresa.objects.get(user__id=int(self.kwargs['user_id']))
+            usuario_empresa.ue_tiponoticacion = request.data['ue_tiponoticacion']
             usuario_empresa.ue_fechanotificacioncartaaviso = request.data['ue_fechanotificacioncartaaviso']
             usuario_empresa.ue_fechatermino = request.data['ue_fechatermino']
-            usuario_empresa.ue_entidad_apv = request.data['ue_entidad_apv']
-            usuario_empresa.ue_cotizacionvoluntaria = request.data['ue_cotizacionvoluntaria']
-            usuario_empresa.ue_tieneahorrovoluntario = request.data['ue_tieneahorrovoluntario']
-            usuario_empresa.ue_ahorrovoluntario = request.data['ue_ahorrovoluntario']
+            usuario_empresa.ue_causal = request.data['ue_causal']
+            usuario_empresa.ue_fundamento = request.data['ue_fundamento']
+
             usuario_empresa.save()
 
         except ValueError:

@@ -136,3 +136,25 @@ class ParametrosIndicadoresPrevisionales(TimeStampedModel):
     class Meta:
         db_table = "conf_parametros_indicadores_previsionales"
         ordering = ['pip_id']
+
+class TablaGeneral(TimeStampedModel):
+    OPCIONES = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    tg_id = models.AutoField("Key", primary_key=True)
+    tg_nombretabla = models.CharField("nombre_tabla", max_length=150)
+    tg_idelemento = models.CharField("elemento_id", null=True, blank=True, max_length=25)
+    tg_descripcion = models.TextField("descripcion", null=True, blank=True)
+    tg_activo = models.CharField("Activo", max_length=1, choices=OPCIONES, default="S")
+
+    def __int__(self):
+        return self.tg_id
+
+    def save(self, *args, **kwargs):
+        super(TablaGeneral, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "conf_tabla_general"
+        ordering = ['tg_id']
