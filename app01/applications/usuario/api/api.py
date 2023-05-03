@@ -188,7 +188,7 @@ class ColaboradorDetailApiView(generics.RetrieveAPIView):
         return Response(colaborador_serializer.data, status=status.HTTP_200_OK)
 
 """
-ETAPA 2 DEL LLENADO DE UN COLABORADOR
+ETAPA 2 DEL LLENADO DE DATOS LABORALES DE UN COLABORADOR
 """
 class UsuarioEmpresaDatosLaboralesCreateAPIView(generics.CreateAPIView):
     serializer_class = UsuarioEmpresaDatosLaboralesSerializers
@@ -386,6 +386,27 @@ class DatosPrevisionalesColaboradorCreateAPIView(generics.CreateAPIView):
             }
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST) 
         
+class DatosPrevisionalesColaboradorRetrieveAPIView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = DatosPrevisionalesUsuarioEmpresaDatosLaboralesSerializers 
+    lookup_field = 'user_id'
+
+    # Agregamos la documentación de Swagger para esta vista
+    @swagger_auto_schema(
+        manual_parameters=[header_param],
+        operation_id="",
+        operation_description="",
+        security=[{"Bearer": []}]
+    )
+    def get(self, request, *args, **kwargs):
+        
+        # Obtenemos la instancia del colaborador a partir del ID de usuario en la URL
+        colaborador_instance = self.get_object()
+
+
+
+
+
 """
 ETAPA 4 DEL LLENADO DE APV Y AHORRO VOLUNTARIO
 """
