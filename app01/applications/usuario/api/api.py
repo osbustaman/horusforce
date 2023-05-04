@@ -10,6 +10,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
 from django.contrib.auth.models import User
+from applications.base.models import TablaGeneral
 from applications.base.utils import indicadores_economicos
 from applications.empresa.models import Afp, Salud
 
@@ -582,7 +583,14 @@ class FiniquitoColaboradorCreateAPIView(generics.CreateAPIView):
             usuario_empresa.ue_tiponoticacion = request.data['ue_tiponoticacion']
             usuario_empresa.ue_fechanotificacioncartaaviso = request.data['ue_fechanotificacioncartaaviso']
             usuario_empresa.ue_fechatermino = request.data['ue_fechatermino']
-            usuario_empresa.ue_causal = request.data['ue_causal']
+
+
+            tablaGeneral = TablaGeneral.objects.get(
+                tg_nombretabla = 'tb_causas_legales_finiquito',
+                tg_idelemento = request.data['ue_causal']
+                )
+
+            usuario_empresa.ue_causal = tablaGeneral
             usuario_empresa.ue_fundamento = request.data['ue_fundamento']
 
             usuario_empresa.save()
