@@ -41,6 +41,23 @@ Estos son los pasos para instalar la aplicación den algun entorno.
     Enter new password:
     Enter it again:
     \q
+
+> Configuración en el servidor para acceder desde pgadmin
+
+    sudo nano /etc/postgresql/<version de postgres>/main/postgresql.conf
+
++ Descomentemos o agreguemos la línea:
+    
+    listen_addresses = '*'
+    
++ El archivo pg_hba.conf se encuentra en la carpeta de instalación de PostgreSQL.
+    
+    sudo nano /etc/postgresql/<version de postgres>/main/pg_hba.conf
+    
++ Agregue una entrada a la sección # conexiones locales IPv4:
+    
+    host    all             all             0.0.0.0/0               trust
+    sudo systemctl restart postgresql
   
 > para poder configurar el acceso desde un computador local se debe solicitar las intrucciones
     
