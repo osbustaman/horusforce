@@ -58,8 +58,6 @@ Estos son los pasos para instalar la aplicación den algun entorno.
     
     host    all             all             0.0.0.0/0               trust
     sudo systemctl restart postgresql
-  
-> para poder configurar el acceso desde un computador local se debe solicitar las intrucciones
     
 
 ## Configuración del proyecto despés de la configuración del entorno
